@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# vim: set fileencoding=utf-8 :
 from distutils.core import setup
 
 import os
@@ -17,6 +19,7 @@ setup(name         = 'pymei',
       version      = '0.1',
       description  = 'PyMei - A Python Media Interface',
       url          = 'http://pymei.org',
+      author       = 'Jørgen Pedersen Tjernø',
       author_email = 'contact@pymei.org',
       scripts      = ['pymei'],
       packages     = ['mei',
