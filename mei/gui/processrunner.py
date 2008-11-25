@@ -6,13 +6,14 @@ import util
 import widgets
 
 class ProcessRunner(widgets.Window):
-    def __init__(self, app, cmd, path, theme):
+    def __init__(self, app, cmd, path, theme, wait_for_it=False):
         super(ProcessRunner, self).__init__()
 
         self._pid = None
         self._app = app
         self._cmd = cmd
         self._path = path
+        self._wait_for_it = wait_for_it
 
         self._theme = theme
         self._font = pygame.font.Font(self._theme['font'], self._theme['font_size'])
@@ -42,6 +43,15 @@ class ProcessRunner(widgets.Window):
                 os.execvp(self._cmd[0], self._cmd)
                 sys.exit(0)
 
+        if not self._wait_for_it:
+            self._drawInfo(screen)
+            if self._process_dead:
+                self._app.windows.pop()
+        else:
+            os.waitpid(self._pid, 0)
+            self._app.windows.pop()
+
+    def _drawInfo(self, screen):
         text1 = '%s is currently running! Press Windows-button to kill it.' % self._cmd[0]
         text2 = 'Command: %s "%s"' % (self._cmd[0], '" "'.join(self._cmd[1:]))
 
@@ -60,5 +70,3 @@ class ProcessRunner(widgets.Window):
 
         self._clock.tick(1)
 
-        if self._process_dead:
-            self._app.windows.pop()
