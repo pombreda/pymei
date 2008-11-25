@@ -37,7 +37,7 @@ class Application(object):
             flags |= pygame.HWSURFACE | pygame.FULLSCREEN
         self.screen = pygame.display.set_mode(self._config['resolution'], flags)
 
-        pygame.display.set_caption('mediaSystem-ng')
+        pygame.display.set_caption('PyMei')
         return self.screen
 
     def setFullscreen(self, value):
