@@ -1,0 +1,86 @@
+Installation
+============
+
+This project uses distutil to install the package. This should work on python
+2.x, but has only been tested on 2.5+. Please let us know if you have problems
+with installing the package.
+
+Installation is not required to use it; you can merely run `./pymei` to start 
+the program. The description below is verbatim what distutil's documentation
+will tell you, see [distutil's manual](http://docs.python.org/install/) for 
+more information.
+
+Globally
+--------
+Just run a quick
+
+    sudo python setup.py install
+
+Or omit `sudo` if you're already administrator.
+
+
+Locally
+-------
+To install in your home dir instead of globally, use
+
+    python setup.py install --home=~
+
+Or possibly 
+
+    python setup.py install --home=~/pymei
+
+to not clutter your homedir too much.
+
+
+Configuration
+=============
+
+In the source dir, there's a pymei.config. setup.py will install this to
+$prefix/etc/pymei.config (/etc/pymei.config for a global installation), and
+when you start pymei it will look for it three places. In the current directory
+(./pymei.config), in your home directory (~/.pymei/config) or in
+/etc/pymei.config. The first file found will be used.
+
+Usually you'll copy /etc/pymei.config to ~/.pymei/config, by doing something
+like:
+
+    mkdir ~/.pymei
+    cp /etc/pymei.config ~/.pymei/config
+
+Then edit this file using your favorite text editor.
+
+The text file is in [JSON](http://json.org) format, and should be fairly human
+readable. For information about the various configuration options, see our 
+wiki, specifically [this page](http://code.google.com/p/pymei/wiki/Configuration).
+
+
+Plugins
+=======
+
+Some plugins are installed by default, typically in /usr/lib/python?.?/site-packages/mei/plugins/.
+These are the *stock plugins*, but you are encouraged to create your own or use
+user-contributed ones. These go into `~/.pymei/plugins/`, and all the plugins in
+those two dirs are loaded, but the ones in your `~/.pymei/plugins/` will get
+priority.
+
+See the information in Configuration on how to load/use plugins, or possibly
+the plugin documentation. :)
+
+
+Reporting problems
+==================
+
+If you experience a bug or a problem, check if anyone has experienced similar
+issues [on this page](http://code.google.com/p/pymei/issues/list), and either
+add your voice to the ones already crying out by posting a comment to the
+existing issue or add a new issue to the tracker.
+
+
+Contact us
+==========
+You can find the PyMei homepage at [pymei.org](http://pymei.org) and the Google
+Code project is located at [this link](http://code.google.com/p/pymei/).
+
+We accept general email on [contact@pymei.org](mailto:contact@pymei.org),
+questions on and contributions of themes to [themes@pymei.org](mailto:themes@pymei.org),
+and questions about donations to (donations@pymei.org)(mailto:donations@pymei.org].

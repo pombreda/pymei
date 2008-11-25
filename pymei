@@ -1,0 +1,44 @@
+#!/usr/bin/python
+
+import os, sys
+import logging
+import yaml
+
+import mei
+
+from mei import application, plugin, theme, datafiles
+from mei.gui import menu 
+
+# Load global or user config.
+config = None
+for conf in ['./pymei.config', '~/.pymei/config', '/etc/pymei.config']:
+    conf = os.path.expanduser(conf)
+    if os.path.isfile(conf):
+        config = yaml.load(open(conf))
+        print "Using file '%s' for config." % conf
+        break
+
+if config.get('debug'):
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
+
+searchpath = ['.', os.path.expanduser('~/.pymei'), '/usr/share/pymei']
+theme.set_searchpath(searchpath)
+datafiles.set_searchpath(searchpath)
+
+# We can't start without a config! :)
+if config is None:
+    logging.fatal('Could not find any config file!')
+    sys.exit(1)
+
+# Load global & user plugins.
+for plugdir in [os.path.join(os.path.dirname(mei.__file__), 'plugins'), os.path.expanduser('~/.pymei/plugins')]:
+    logging.debug("Loading plugins from dir '%s'" % plugdir)
+    plugin.load_plugins(plugdir)
+
+# Start mei.application with Menu as the first screen.
+app = application.Application(menu.Menu, config)
+while app.run():
+    pass
+app.quit()
