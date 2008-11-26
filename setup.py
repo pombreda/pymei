@@ -16,7 +16,7 @@ def files_in(dir):
     return files
 
 setup(name         = 'pymei',
-      version      = '0.1.1',
+      version      = '0.1.2',
       description  = 'PyMei - A Python Media Interface',
       url          = 'http://pymei.org',
       author       = 'Jørgen Pedersen Tjernø',
