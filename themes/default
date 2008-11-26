@@ -1,5 +1,5 @@
 {
-    "font": "/usr/share/fonts/truetype/freefont/FreeMono.ttf",
+    "font": "FreeMono.ttf",
     "font_color": [40, 40, 150],
     "padding": 5,
 
@@ -34,7 +34,7 @@
     },
     "plugins": {
         "clock": {
-            "font": "/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf",
+            "font": "FreeMonoBold.ttf",
             "font_size": 28,
             "font_color": [160, 160, 80]
         }

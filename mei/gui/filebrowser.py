@@ -4,7 +4,7 @@ import os
 
 import pygame
 
-from mei import dirlist, theme
+from mei import dirlist, theme, datafiles
 from mei.gui import util, widgets
 
 class FileBrowser(widgets.Window):
@@ -17,7 +17,7 @@ class FileBrowser(widgets.Window):
         self._app = app
 
         self.theme = theme.get('filebrowser')
-        self._font = pygame.font.Font(self.theme['font'], self.theme['font_size'])
+        self._font = pygame.font.Font(datafiles.get(self.theme['font']), self.theme['font_size'])
         self._font.set_bold(True)
 
         self._listview = widgets.ListView(theme.get('filebrowser/listview'), self._getDisplayList, self._getListLength)

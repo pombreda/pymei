@@ -2,6 +2,7 @@ import os
 import signal
 import pygame
 
+from mei import datafiles
 import util
 import widgets
 
@@ -15,7 +16,7 @@ class ProcessRunner(widgets.Window):
         self._path = path
 
         self._theme = theme
-        self._font = pygame.font.Font(self._theme['font'], self._theme['font_size'])
+        self._font = pygame.font.Font(datafiles.get(self._theme['font']), self._theme['font_size'])
         self._clock = pygame.time.Clock()
 
 

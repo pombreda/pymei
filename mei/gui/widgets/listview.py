@@ -2,6 +2,7 @@ import itertools
 
 import pygame
 
+from mei import datafiles
 from mei.gui import util
 import window
 import widget
@@ -11,7 +12,7 @@ class ListView(widget.Widget):
         super(ListView, self).__init__()
 
         self.theme = theme
-        self.font = pygame.font.Font(theme['font'], theme['font_size'])
+        self.font = pygame.font.Font(datafiles.get(theme['font']), theme['font_size'])
 
         self.top = 0
         self._selected = 0

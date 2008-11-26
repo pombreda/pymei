@@ -1,7 +1,7 @@
 import pygame
 import time
 
-from mei import theme, plugin
+from mei import theme, plugin, datafiles
 from mei.gui import util
 
 class Clock(plugin.Plugin):
@@ -9,7 +9,7 @@ class Clock(plugin.Plugin):
         super(Clock, self).__init__()
         self._app = app
         self._theme = theme.get('plugins/clock')
-        self._font = pygame.font.Font(self._theme['font'], self._theme['font_size'])
+        self._font = pygame.font.Font(datafiles.get(self._theme['font']), self._theme['font_size'])
 
         self._format = '%R'
         if 'format' in config:

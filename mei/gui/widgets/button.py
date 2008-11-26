@@ -1,5 +1,6 @@
 import pygame
 
+from mei import datafiles
 from mei.gui import util
 import widget
 
@@ -12,7 +13,7 @@ class Button(widget.Widget):
         else:
             self.icon = None
 
-        self.font = pygame.font.Font(theme['font'], theme['font_size'])
+        self.font = pygame.font.Font(datafiles.get(theme['font']), theme['font_size'])
         self.theme = theme
 
     def _drawBox(self, dim, hilight):
