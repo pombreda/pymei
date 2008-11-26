@@ -42,6 +42,7 @@ class Application(object):
 
     def setFullscreen(self, value):
         if value != self._fullscreen:
+            print "New fullscreen state %s" % value
             self._fullscreen = value
         self._initScreen()
 

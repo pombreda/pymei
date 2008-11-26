@@ -6,51 +6,59 @@ import util
 import widgets
 
 class ProcessRunner(widgets.Window):
-    def __init__(self, app, cmd, path, theme, wait_for_it=False):
+    def __init__(self, app, cmd, path, theme):
         super(ProcessRunner, self).__init__()
 
         self._pid = None
         self._app = app
         self._cmd = cmd
         self._path = path
-        self._wait_for_it = wait_for_it
 
         self._theme = theme
         self._font = pygame.font.Font(self._theme['font'], self._theme['font_size'])
         self._clock = pygame.time.Clock()
+
+
+        self._should_fullscreen = False
 
         self._process_dead = False
         self._old_sig = signal.signal(signal.SIGCHLD, self.processExit)
 
     def key(self, event):
         if event.key == pygame.K_LSUPER or event.key == pygame.K_RSUPER:
-            if self._pid:
-                os.kill(self._pid, signal.SIGKILL)
-            self._app.windows.pop()
+            self._quit()
 
     def processExit(self, signum, stackframe):
         self._process_dead = True
         signal.signal(signal.SIGCHLD, self._old_sig)
+        self._pid = None
+
+    def _start(self):
+        self._should_fullscreen = self._app.getFullscreen()
+        if self._should_fullscreen:
+            self._app.setFullscreen(False)
+
+        self._pid = os.fork()
+        if self._pid == 0:
+            os.chdir(self._path)
+            os.execvp(self._cmd[0], self._cmd)
+            sys.exit(0)
+
+    def _quit(self):
+        if self._pid:
+            os.kill(self._pid, signal.SIGKILL)
+
+        if self._should_fullscreen:
+            self._app.setFullscreen(True)
+
+        self._app.windows.pop()
 
     def draw(self, screen):
         super(ProcessRunner, self).draw(screen)
 
         if not self._pid:
-            self._pid = os.fork()
-            if self._pid == 0:
-                os.chdir(self._path)
-                os.execvp(self._cmd[0], self._cmd)
-                sys.exit(0)
+            self._start()
 
-        if not self._wait_for_it:
-            self._drawInfo(screen)
-            if self._process_dead:
-                self._app.windows.pop()
-        else:
-            os.waitpid(self._pid, 0)
-            self._app.windows.pop()
-
-    def _drawInfo(self, screen):
         text1 = '%s is currently running! Press Windows-button to kill it.' % self._cmd[0]
         text2 = 'Command: %s "%s"' % (self._cmd[0], '" "'.join(self._cmd[1:]))
 
@@ -69,3 +77,5 @@ class ProcessRunner(widgets.Window):
 
         self._clock.tick(1)
 
+        if self._process_dead:
+            self._quit()
