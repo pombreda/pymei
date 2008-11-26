@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 from distutils.core import setup
 
