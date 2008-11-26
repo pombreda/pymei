@@ -55,7 +55,8 @@ class Application(object):
             # TODO: Should this be able to "intercept" the keypress
             # so that the window doesn't receive it?
             plugin.singletons.call(self._plugins, 'key', event)
-            self.windows[-1].key(event)
+            if self.windows:
+                self.windows[-1].key(event)
 
     def run(self):
         self.screen.fill((0, 0, 0))

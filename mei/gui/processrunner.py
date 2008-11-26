@@ -39,7 +39,6 @@ class ProcessRunner(widgets.Window):
             self._pid = os.fork()
             if self._pid == 0:
                 os.chdir(self._path)
-                print repr(self._cmd)
                 os.execvp(self._cmd[0], self._cmd)
                 sys.exit(0)
 

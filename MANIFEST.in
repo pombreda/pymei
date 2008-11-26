@@ -1,0 +1,6 @@
+include pymei.config
+include README
+include LICENSE
+
+graft data
+graft themes
