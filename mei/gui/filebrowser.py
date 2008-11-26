@@ -63,8 +63,11 @@ class FileBrowser(widgets.Window):
             sb_pos = (width - sb_width, self._font.get_linesize())
             self._scrollbar.draw(self._listview.getViewEntries(), self._listview.top, self._getListLength(), browser, sb_pos)
 
-        # Draw border
-        pygame.draw.rect(browser, (0, 0, 0), (0, self._font.get_linesize(), width, height - self._font.get_linesize()), 1)
+            # Draw border
+            pygame.draw.rect(browser, (0, 0, 0), (0, self._font.get_linesize(), width, height - self._font.get_linesize()), 1)
+        else:
+            # Draw border without scrollbar.
+            pygame.draw.rect(browser, (0, 0, 0), (0, self._font.get_linesize(), width - sb_width, height - self._font.get_linesize()), 1)
 
         # Blit it all to screen
         (screen_width, screen_height) = screen.get_size()
