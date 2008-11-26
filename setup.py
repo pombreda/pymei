@@ -29,8 +29,8 @@ setup(name         = 'pymei',
                       'mei.gui.widgets'
                      ],
       data_files   = [
-                      ('/etc', ['pymei.config']),
-                      ('/usr/share/pymei/data', files_in('data')),
-                      ('/usr/share/pymei/themes', files_in('themes'))
+                      ('/etc', ['example_configuration/pymei.config']),
+                      ('share/pymei/data', files_in('data')),
+                      ('share/pymei/themes', files_in('themes'))
                      ]
      )

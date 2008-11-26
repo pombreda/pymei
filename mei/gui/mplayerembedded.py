@@ -53,6 +53,11 @@ class MplayerEmbedded(widgets.Widget):
         # This ensures a quick redraw. :)
         pygame.event.post(pygame.event.Event(pygame.USEREVENT))
 
+        # Cursor seems to reapper after mplayer has taken over the window, so
+        # we have to toggle the cursor. :-)
+        pygame.mouse.set_visible(True)
+        pygame.mouse.set_visible(False)
+
         self._app.windows.pop()
 
 from pygame.locals import *
