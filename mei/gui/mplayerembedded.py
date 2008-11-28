@@ -29,7 +29,7 @@ class MplayerEmbedded(widgets.Widget):
         if key in _MPLAYER_LOOKUP:
             key = _MPLAYER_LOOKUP[key]
 
-        print >>self._process.stdin, 'key_down_event %i' % key
+        print >>self._process.stdin, 'pausing_keep_force key_down_event %i' % key
 
     def draw(self, screen):
         if not self._process:
