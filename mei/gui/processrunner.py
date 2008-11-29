@@ -30,6 +30,8 @@ class ProcessRunner(widgets.Window):
             self._quit()
 
     def processExit(self, signum, stackframe):
+        os.wait()
+
         self._process_dead = True
         signal.signal(signal.SIGCHLD, self._old_sig)
         self._pid = None

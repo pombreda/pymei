@@ -18,6 +18,8 @@ class MplayerEmbedded(widgets.Widget):
 
 
     def processExit(self, signum, stackframe):
+        os.wait()
+
         signal.signal(signal.SIGCHLD, self._old_sig)
         self._process = None
 
