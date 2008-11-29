@@ -1,6 +1,6 @@
 import pygame
 
-import os, subprocess, signal
+import os, subprocess, signal, logging, sys, re
 
 from mei.gui import widgets
 
@@ -13,9 +13,7 @@ class MplayerEmbedded(widgets.Widget):
         self._files = files
 
         self._process = None
-
         self._old_sig = signal.signal(signal.SIGCHLD, self.processExit)
-
 
     def processExit(self, signum, stackframe):
         os.wait()
@@ -25,21 +23,67 @@ class MplayerEmbedded(widgets.Widget):
 
     def key(self, event):
         if not self._process:
+            logging.debug('MplayerEmbedded.key called when no running process.')
             return
 
         key = event.key
         if key in _MPLAYER_LOOKUP:
             key = _MPLAYER_LOOKUP[key]
 
-        print >>self._process.stdin, 'pausing_keep_force key_down_event %i' % key
+        command = 'key_down_event %i' % key
+        if not self._old_mplayer:
+            command = 'pausing_keep_force %s' % command
+        elif key == ord(' '):
+            # If we're pressing space, aka "most used pause button", and 
+            # we're running a silly version of mplayer, send pause instead.
+            command = 'pause'
+
+        print >>self._process.stdin, command
+
+    def _startMplayer(self):
+        wminfo = pygame.display.get_wm_info()
+        wid = wminfo['window']
+        cmd = ['mplayer', '-vo', 'x11', '-zoom', '-slave', '-quiet', '-wid', str(wid)] + self._files
+
+        self._process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, cwd=self._path)
+
+        # We grab this for version detection.
+        line = self._process.stdout.readline()
+
+        if not line.startswith('MPlayer '):
+            logging.warn("Couldn't understand first line of mplayer output, tried to parse for version: %s", line)
+        else:
+            self._testVersion(line[len('MPlayer '):])
+
+        if not self._old_mplayer:
+            logging.debug('Started mplayer, detected new version. (Using pausing_keep_force)')
+        else:
+            logging.warn("You're using an mplayer that does not support pausing_keep_force.")
+            logging.warn(" This means you cannot use your pause button to unpause, you must use any other button (like 'h')")
+
+    def _testVersion(self, version):
+        # This is an attempt at version detection;
+        # mplayer <= 1.0rc2 doesn't have pausing_keep_force.
+        # First version to get it was SVN r27665
+        # (http://lists.mplayerhq.hu/pipermail/mplayer-cvslog/2008-September/035513.html)
+        self._old_mplayer = True
+        match = re.match(r'([.\d]+)(?:rc([.\d]+))?', version)
+        if match:
+            version = map(int, re.sub(r'[^.\d-]+', '.', match.group(1)).split('.'))
+            rc = map(int, re.sub(r'[^.\d-]+', '.', match.group(2) or '').split('.'))
+            if version >= [1, 0]:
+                if not rc or rc > [2]:
+                    self._old_mplayer = False
+        elif version.startswith('dev-SVN'):
+            match = re.match(r'dev-SVN-r(\d+)', version)
+            if not match:
+                logging.warn("Couldn't understand SVN version format for line: %s", line)
+            elif int(match.group(1)) >= 27665:
+                self._old_mplayer = False
 
     def draw(self, screen):
         if not self._process:
-            wminfo = pygame.display.get_wm_info()
-            wid = wminfo['window']
-            cmd = ['mplayer', '-vo', 'x11', '-zoom', '-slave', '-quiet', '-wid', str(wid)] + self._files
-
-            self._process = subprocess.Popen(cmd, stdin=subprocess.PIPE, cwd=self._path)
+            self._startMplayer()
 
         while self._process:
             event = pygame.event.wait()
