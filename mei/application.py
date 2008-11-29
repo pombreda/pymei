@@ -1,5 +1,6 @@
 import pygame
 import time
+import logging
 
 import plugin, theme
 
@@ -42,9 +43,9 @@ class Application(object):
 
     def setFullscreen(self, value):
         if value != self._fullscreen:
-            print "New fullscreen state %s" % value
+            logging.debug("New fullscreen state is %s" % value)
             self._fullscreen = value
-        self._initScreen()
+            self._initScreen()
 
     def getFullscreen(self):
         return self._fullscreen

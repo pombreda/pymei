@@ -13,13 +13,14 @@ def _clamp(i, min, max):
     return i
 
 class ScrollableImage(widget.Widget):
-    def __init__(self, size, image):
+    def __init__(self, size, image=None):
         super(ScrollableImage, self).__init__()
 
         self._w, self._h = size
         self._x, self._y = 0, 0
 
-        self.setImage(image)
+        if image:
+            self.setImage(image)
 
     def setImage(self, image):
         self._image = image

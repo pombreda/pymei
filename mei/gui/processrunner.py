@@ -19,7 +19,6 @@ class ProcessRunner(widgets.Window):
         self._font = pygame.font.Font(datafiles.get(self._theme['font']), self._theme['font_size'])
         self._clock = pygame.time.Clock()
 
-
         self._should_fullscreen = False
 
         self._process_dead = False
