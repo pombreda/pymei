@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 from distutils.core import setup
+from mei.version import APP_VERSION
 
 import os
 
@@ -16,7 +17,7 @@ def files_in(dir):
     return files
 
 setup(name         = 'pymei',
-      version      = '0.1.2',
+      version      = APP_VERSION,
       description  = 'PyMei - A Python Media Interface',
       url          = 'http://pymei.org',
       author       = 'Jørgen Pedersen Tjernø',

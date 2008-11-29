@@ -8,14 +8,15 @@ import mei
 
 from mei import application, plugin, theme, datafiles
 from mei.gui import menu 
+from mei.version import *
 
 # Load global or user config.
 config = None
-for conf in ['./pymei.config', '~/.pymei/config', '/etc/pymei.config']:
-    conf = os.path.expanduser(conf)
-    if os.path.isfile(conf):
-        config = yaml.load(open(conf))
-        print "Using file '%s' for config." % conf
+for config_file in ['./pymei.config', '~/.pymei/config', '/etc/pymei.config']:
+    config_file = os.path.expanduser(config_file)
+    if os.path.isfile(config_file):
+        config = yaml.load(open(config_file))
+        print "Using file '%s' for config." % config_file
         break
 
 if config.get('debug'):
@@ -37,8 +38,18 @@ for plugdir in [os.path.join(os.path.dirname(mei.__file__), 'plugins'), os.path.
     logging.debug("Loading plugins from dir '%s'" % plugdir)
     plugin.load_plugins(plugdir)
 
+logging.info('Starting %s v%s' % (APP_NAME, APP_VERSION))
+
 # Start mei.application with Menu as the first screen.
-app = application.Application(menu.Menu, config)
-while app.run():
+current_app = application.Application(menu.Menu, config)
+
+# If we're running in debug mode, start the debug server.
+if config.get('debug'):
+    # Make some neat aliases for the debug server.
+    _ = a = app = current_app
+    from mei import debugserver
+    (debugthread, debugsvr) = debugserver.spawn(locals())
+
+while current_app.run():
     pass
-app.quit()
+current_app.quit()
