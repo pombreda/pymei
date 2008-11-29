@@ -70,14 +70,17 @@ class MplayerEmbedded(widgets.Widget):
         match = re.match(r'([.\d]+)(?:rc([.\d]+))?', version)
         if match:
             version = map(int, re.sub(r'[^.\d-]+', '.', match.group(1)).split('.'))
-            rc = map(int, re.sub(r'[^.\d-]+', '.', match.group(2) or '').split('.'))
+            rc = []
+            if match.group(2):
+                rc = map(int, re.sub(r'[^.\d-]+', '.', match.group(2)).split('.'))
             if version >= [1, 0]:
                 if not rc or rc > [2]:
                     self._old_mplayer = False
         elif version.startswith('dev-SVN'):
             match = re.match(r'dev-SVN-r(\d+)', version)
             if not match:
-                logging.warn("Couldn't understand SVN version format for line: %s", line)
+                logging.warn("Couldn't understand SVN version format for: %s", version)
+            # First version to get it was SVN r27665, so that's what this constant is.
             elif int(match.group(1)) >= 27665:
                 self._old_mplayer = False
 
