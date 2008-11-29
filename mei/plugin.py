@@ -7,6 +7,9 @@ import logging
 class Plugin(object):
     pass
 
+class MissingDependency(Exception):
+    pass
+
 def load_plugins(plugin_path):
     if not os.path.isdir(plugin_path):
         return
@@ -21,6 +24,8 @@ def load_plugins(plugin_path):
         try:
             logging.debug("Loading plugin '%s' from '%s'", plugin, plugin_path)
             __import__(plugin, fromlist=[''])
+        except MissingDependency, (dependency):
+            logging.info("Could not load '%s', required dependency '%s' is missing.", plugin, dependency)
         except:
             logging.warn("Could not load plugin file '%s' from '%s'", plugin, plugin_path, exc_info=1)
     sys.path = sys.path[1:]
