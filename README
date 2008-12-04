@@ -10,6 +10,18 @@ the program. The description below is verbatim what distutil's documentation
 will tell you, see [distutil's manual](http://docs.python.org/install/) for 
 more information.
 
+Dependencies
+------------
+The project depends on two packages:
+
+* [PyGame](http://www.pygame.org)
+* [PyYaml](http://www.pyyaml.org)
+
+Some plugins have dependencies:
+* For the XKCD-plugin, you need [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/).
+* The LIRC input plugin requires [pylirc](http://pylirc.mccabe.nu/)
+
+
 Globally
 --------
 Just run a quick

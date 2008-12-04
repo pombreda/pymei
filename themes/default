@@ -1,42 +1,41 @@
-{
-    "font": "FreeMono.ttf",
-    "font_color": [40, 40, 150],
-    "padding": 5,
+font: FreeMono.ttf
+font_color: [40, 40, 150]
+font_size: 18
+padding: 5
 
-    "menu": {
-        "spacing": 10,
-        "button": {
-            "font_size": 36,
-            "color": [160, 160, 160],
-            "color_hilight": [210, 210, 210],
-            "border_width": 2
-        }
-    },
-    "processrunner": {
-        "font_size": 22,
-        "font_color": [160, 160, 80]
-    },
-    "filebrowser": {
-        "font_size": 18,
-        "heading_color": [160, 160, 80],
-        "hilight_color": [20, 110, 20],
-        "background": [255, 255, 255],
-        "background_selected": [180, 100, 100],
-        "scrollbar": {
-            "background": [220, 40, 40],
-            "color": [255, 80, 80],
-            "width": 20
-        }, "listview": {
-            "padding": 2,
-            "min_width": 300,
-            "entries": 20
-        }
-    },
-    "plugins": {
-        "clock": {
-            "font": "FreeMonoBold.ttf",
-            "font_size": 28,
-            "font_color": [160, 160, 80]
-        }
-    }
-}
+menu:
+    spacing: 10
+    button:
+        font_size: 36
+        color: [160, 160, 160]
+        color_hilight: [210, 210, 210]
+        border_width: 2
+
+processrunner:
+    font_size: 22
+    font_color: [160, 160, 80]
+
+filebrowser:
+    heading_color: [160, 160, 80]
+    hilight_color: [20, 110, 20]
+    background: [255, 255, 255]
+    background_selected: [180, 100, 100]
+    scrollbar:
+        background: [220, 40, 40]
+        color: [255, 80, 80]
+        width: 20
+    listview:
+        padding: 2
+        min_width: 300
+        entries: 20
+
+plugins:
+    clock:
+        font: FreeMonoBold.ttf
+        font_size: 28
+        font_color: [160, 160, 80]
+    xkcd:
+        padding: 20
+        heading_size: 36
+        heading_color: [160, 160, 80]
+        font_color: [160, 160, 80]

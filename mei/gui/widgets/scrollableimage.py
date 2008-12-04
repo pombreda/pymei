@@ -1,7 +1,6 @@
 import pygame
 
 from mei.gui import util
-import window
 import widget
     
 def _clamp(i, min, max):
