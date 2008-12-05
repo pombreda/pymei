@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#
 # Copyright (c) 2008, Thomas Hurst <tom@hur.st>
 #
 # Use of this file is unrestricted provided this notice is retained.

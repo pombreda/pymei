@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# File describing version number & such.
 
 APP_NAME = 'pymei'
-APP_VERSION = '0.1.3'
+APP_VERSION = '0.1.4'

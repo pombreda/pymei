@@ -18,6 +18,7 @@ The project depends on two packages:
 * [PyYaml](http://www.pyyaml.org)
 
 Some plugins have dependencies:
+
 * For the XKCD-plugin, you need [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/).
 * The LIRC input plugin requires [pylirc](http://pylirc.mccabe.nu/)
 

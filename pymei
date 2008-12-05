@@ -12,26 +12,31 @@ from mei.version import *
 
 # Load global or user config.
 config = None
-for config_file in ['./pymei.config', '~/.pymei/config', '/etc/pymei.config']:
+for config_file in [
+                    './pymei.config', 
+                    '~/.pymei/config',
+                    '/etc/pymei.config',
+                    os.path.join(sys.prefix, 'etc/pymei.config')
+                   ]:
     config_file = os.path.expanduser(config_file)
     if os.path.isfile(config_file):
         config = yaml.load(open(config_file))
         print "Using file '%s' for config." % config_file
         break
 
+# We can't start without a config! :)
+if config is None:
+    print >>sys.stderr, "Unable to find config!"
+    sys.exit(1)
+
 if config.get('debug'):
     logging.basicConfig(level=logging.DEBUG)
 else:
     logging.basicConfig(level=logging.INFO)
 
-searchpath = ['.', os.path.expanduser('~/.pymei'), '/usr/share/pymei']
+searchpath = ['.', os.path.expanduser('~/.pymei'), os.path.join(sys.prefix, 'share/pymei')]
 theme.set_searchpath(searchpath)
 datafiles.set_searchpath(searchpath)
-
-# We can't start without a config! :)
-if config is None:
-    logging.fatal('Could not find any config file!')
-    sys.exit(1)
 
 # Load global & user plugins.
 for plugdir in [os.path.join(os.path.dirname(mei.__file__), 'plugins'), os.path.expanduser('~/.pymei/plugins')]:
