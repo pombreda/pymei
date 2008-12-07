@@ -2,16 +2,15 @@
 
 import os, sys
 import logging
-import yaml
 
 import mei
 
-from mei import application, plugin, theme, datafiles
+from mei import application, plugin, theme, datafiles, config
 from mei.gui import menu 
 from mei.version import *
 
 # Load global or user config.
-config = None
+config_loaded = False
 for config_file in [
                     './pymei.config', 
                     '~/.pymei/config',
@@ -20,12 +19,13 @@ for config_file in [
                    ]:
     config_file = os.path.expanduser(config_file)
     if os.path.isfile(config_file):
-        config = yaml.load(open(config_file))
+        config.load(config_file)
+        config_loaded = True
         print "Using file '%s' for config." % config_file
         break
 
 # We can't start without a config! :)
-if config is None:
+if not config_loaded:
     print >>sys.stderr, "Unable to find config!"
     sys.exit(1)
 
@@ -46,7 +46,7 @@ for plugdir in [os.path.join(os.path.dirname(mei.__file__), 'plugins'), os.path.
 logging.info('Starting %s v%s' % (APP_NAME, APP_VERSION))
 
 # Start mei.application with Menu as the first screen.
-current_app = application.Application(menu.Menu, config)
+current_app = application.Application(menu.Menu)
 
 # If we're running in debug mode, start the debug server.
 if config.get('debug'):

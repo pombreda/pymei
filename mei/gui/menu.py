@@ -2,7 +2,7 @@ import functools
 import os
 import pygame
 
-from mei import plugin, theme, datafiles
+from mei import plugin, theme, datafiles, config
 from mei.gui import videobrowser, widgets
 
 class Menu(widgets.Window):
@@ -11,7 +11,7 @@ class Menu(widgets.Window):
 
         self._app = app
         self._theme = theme.get('menu')
-        self._config = app.configfile['menu']
+        self._config = config.get('menu')
 
         if not choices:
             choices = self._config['choices']
@@ -69,13 +69,16 @@ class Menu(widgets.Window):
         if event.key == pygame.K_ESCAPE or event.key == pygame.K_q or event.key == pygame.K_BACKSPACE:
             self._app.close_window()
         elif event.key == pygame.K_DOWN:
-            self.selected = (self.selected + 1) % len(self._choices)
+            if self._choices:
+                self.selected = (self.selected + 1) % len(self._choices)
         elif event.key == pygame.K_UP:
-            self.selected = (self.selected - 1) % len(self._choices)
+            if self._choices:
+                self.selected = (self.selected - 1) % len(self._choices)
         elif event.key == pygame.K_RETURN or event.key == pygame.K_RIGHT:
-            win = self._choices[self.selected][1](self._app)
-            if win:
-                self._app.open_window(win)
+            if self._choices:
+                win = self._choices[self.selected][1](self._app)
+                if win:
+                    self._app.open_window(win)
 
     def draw(self, screen):
         super(Menu, self).draw(screen)

@@ -1,7 +1,7 @@
 import os
 import re
 
-from mei import dirlist
+from mei import dirlist, config
 import filebrowser, mplayer, mplayerembedded
 
 class VideoBrowser(filebrowser.FileBrowser):
@@ -10,14 +10,14 @@ class VideoBrowser(filebrowser.FileBrowser):
         self._app = app
         self._listview.hilight_callback = self._shouldHilight
         self._player = mplayer.Mplayer
-        if not app.configfile.get('mplayer', {}).get('separate_window'):
+        if not config.get('mplayer').get('separate_window'):
             self._player = mplayerembedded.MplayerEmbedded
 
     def _shouldHilight(self, i, entry):
         return os.path.exists(self._playedPath(os.path.join(self._path, self._get(i))))
        
     def _playedPath(self, entry):
-        return self._app.configfile['videobrowser']['played_dir'] + '/' + entry + '/' + '.played'
+        return config.get('videobrowser')['played_dir'] + '/' + entry + '/' + '.played'
 
     def _markPlayed(self, selected):
         path = self._playedPath(selected)

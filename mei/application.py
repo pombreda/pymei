@@ -2,17 +2,16 @@ import pygame
 import time
 import logging
 
-import plugin, theme
+import plugin, theme, config
 
 class Application(object):
-    def __init__(self, entrypoint, config):
+    def __init__(self, entrypoint):
         pygame.display.init()
         pygame.font.init()
         pygame.mouse.set_visible(False)
         pygame.event.set_blocked([pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN])
 
-        self.configfile = config 
-        self._config = config['application']
+        self._config = config.get('application')
         theme.load(self._config['theme'])
 
         self._fullscreen = bool(self._config['fullscreen'])
