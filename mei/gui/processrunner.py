@@ -7,6 +7,18 @@ from mei import datafiles
 import util
 import widgets
 
+def get_path(bin):
+    path = os.environ.get('PATH')
+    if not path:
+        path = os.defpath
+
+    for dir in path.split(os.pathsep):
+        file = os.path.join(dir, bin)
+        if os.path.isfile(file) and os.access(file, os.X_OK):
+            return file
+
+    return None
+
 class ProcessRunner(widgets.Window):
     def __init__(self, app, cmd, path, theme):
         super(ProcessRunner, self).__init__()
