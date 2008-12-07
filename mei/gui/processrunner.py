@@ -55,7 +55,7 @@ class ProcessRunner(widgets.Window):
         if self._should_fullscreen:
             self._app.setFullscreen(True)
 
-        self._app.windows.pop()
+        self._app.close_window()
 
     def draw(self, screen):
         super(ProcessRunner, self).draw(screen)

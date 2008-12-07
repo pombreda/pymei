@@ -12,4 +12,4 @@ class StreamPlayer(plugin.Plugin, vlc.Vlc):
         self._options = options
 
     def key(self, event):
-        self._app.windows.pop()
+        self._app.close_window()

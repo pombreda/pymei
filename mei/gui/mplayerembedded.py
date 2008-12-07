@@ -107,7 +107,7 @@ class MplayerEmbedded(widgets.Widget):
         pygame.mouse.set_visible(True)
         pygame.mouse.set_visible(False)
 
-        self._app.windows.pop()
+        self._app.close_window()
 
 from pygame.locals import *
 # Based on osdep/keycodes.h, mplayer source snapshot 26/11/2008.

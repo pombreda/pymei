@@ -108,7 +108,7 @@ class XkcdBrowser(plugin.Plugin, widgets.Window):
 
             self._current_data = None
         elif event.key == pygame.K_q:
-            self._app.windows.pop()
+            self._app.close_window()
         elif event.key == pygame.K_UP:
             self._scrollable_frame.scrollY(-50)
         elif event.key == pygame.K_DOWN:

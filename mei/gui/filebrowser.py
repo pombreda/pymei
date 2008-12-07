@@ -114,7 +114,7 @@ class FileBrowser(widgets.Window):
         if event.key == pygame.K_BACKSPACE:
             self.go('..')
         elif event.key == pygame.K_q or event.key == pygame.K_ESCAPE:
-            self._app.windows.pop()
+            self._app.close_window()
         elif event.key == pygame.K_DOWN:
             self._listview.selected += 1
         elif event.key == pygame.K_PAGEDOWN:

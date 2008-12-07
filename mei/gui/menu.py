@@ -18,7 +18,7 @@ class Menu(widgets.Window):
 
         self._choices = []
 
-        if len(app.windows):
+        if app.current_window:
             self._choices.append((self.makeButton('Back'), self.goBack))
 
 
@@ -46,7 +46,7 @@ class Menu(widgets.Window):
         self.selected = 0
 
     def goBack(self, app):
-        app.windows.pop()
+        app.close_window()
         return None
 
     def makeButton(self, label):
@@ -67,7 +67,7 @@ class Menu(widgets.Window):
 
     def key(self, event):
         if event.key == pygame.K_ESCAPE or event.key == pygame.K_q or event.key == pygame.K_BACKSPACE:
-            self._app.windows.pop()
+            self._app.close_window()
         elif event.key == pygame.K_DOWN:
             self.selected = (self.selected + 1) % len(self._choices)
         elif event.key == pygame.K_UP:
@@ -75,7 +75,7 @@ class Menu(widgets.Window):
         elif event.key == pygame.K_RETURN or event.key == pygame.K_RIGHT:
             win = self._choices[self.selected][1](self._app)
             if win:
-                self._app.windows.append(win)
+                self._app.open_window(win)
 
     def draw(self, screen):
         super(Menu, self).draw(screen)

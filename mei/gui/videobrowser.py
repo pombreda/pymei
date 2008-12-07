@@ -33,6 +33,6 @@ class VideoBrowser(filebrowser.FileBrowser):
             files = filter(is_video.search, dirlist.get(selected)[1])
             if files:
                 self._markPlayed(selected)
-                self._app.windows.append(self._player(self._app, selected, files))
+                self._app.open_window(self._player(self._app, selected, files))
         elif is_video.search(selected):
-            self._app.windows.append(self._player(self._app, os.path.dirname(selected), [os.path.basename(selected)]))
+            self._app.open_window(self._player(self._app, os.path.dirname(selected), [os.path.basename(selected)]))

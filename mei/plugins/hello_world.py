@@ -14,4 +14,4 @@ class HelloWorld(plugin.Plugin, widgets.Window):
         screen.blit(self._img, util.center(screen.get_size(), self._img.get_size()))
 
     def key(self, event):
-        self._app.windows.pop()
+        self._app.close_window()

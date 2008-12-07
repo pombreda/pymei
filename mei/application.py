@@ -22,15 +22,17 @@ class Application(object):
         for pname in self._plugins:
             plugin.singletons.init(pname, self, self._config['plugins'][pname])
 
-        self.windows = []
         self.continue_running = True
+        self._window_stack = []
+
+        self._current_window = None
+        self._current_window = entrypoint(self)
 
         # Sets a recurring event that'll "wake" the loop at least every X ms, so
         # we'll have at least that many FPS. :)
         pygame.time.set_timer(pygame.USEREVENT, int(1.0/self._config['min_fps']*1000))
 
         self.clock = pygame.time.Clock()
-        self.windows.append(entrypoint(self))
 
     def _initScreen(self):
         flags = pygame.DOUBLEBUF
@@ -57,17 +59,37 @@ class Application(object):
             # TODO: Should this be able to "intercept" the keypress
             # so that the window doesn't receive it?
             plugin.singletons.call(self._plugins, 'key', event)
-            if self.windows:
-                self.windows[-1].key(event)
+            if self._current_window:
+                self._current_window.key(event)
+
+
+    @property
+    def current_window(self):
+        return self._current_window
+
+    def close_window(self):
+        if not self.continue_running:
+            return
+        
+        if not self._window_stack:
+            self._current_window = None
+            self.continue_running = False
+        else:
+            self._current_window = self._window_stack.pop()
+
+    def open_window(self, window):
+        if self._current_window:
+            self._window_stack.append(self._current_window)
+        self._current_window = window
 
     def run(self):
         self.screen.fill((0, 0, 0))
 
-        if not self.windows:
+        if not self._current_window:
             return False
 
         plugin.singletons.call(self._plugins, 'before_draw', self.screen)
-        self.windows[-1].draw(self.screen)
+        self._current_window.draw(self.screen)
         plugin.singletons.call(self._plugins, 'after_draw', self.screen)
     
         pygame.display.flip()
