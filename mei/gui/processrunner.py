@@ -1,6 +1,7 @@
 import os
 import signal
 import pygame
+import logging
 
 from mei import datafiles
 import util
@@ -19,7 +20,8 @@ class ProcessRunner(widgets.Window):
         self._font = pygame.font.Font(datafiles.get(self._theme['font']), self._theme['font_size'])
         self._clock = pygame.time.Clock()
 
-        self._should_fullscreen = False
+        self._should_fullscreen = app.getFullscreen()
+        logging.debug("ProcessRunner starts, _should_fullscreen is %s" % self._should_fullscreen)
 
         self._process_dead = False
         self._old_sig = signal.signal(signal.SIGCHLD, self.processExit)
@@ -36,7 +38,6 @@ class ProcessRunner(widgets.Window):
         self._pid = None
 
     def _start(self):
-        self._should_fullscreen = self._app.getFullscreen()
         if self._should_fullscreen:
             self._app.setFullscreen(False)
 
@@ -50,6 +51,7 @@ class ProcessRunner(widgets.Window):
         if self._pid:
             os.kill(self._pid, signal.SIGKILL)
 
+        logging.debug("ProcessRunner is quitting, _should_fullscreen is %s" % self._should_fullscreen)
         if self._should_fullscreen:
             self._app.setFullscreen(True)
 
