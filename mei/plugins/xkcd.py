@@ -27,6 +27,9 @@ except ImportError:
     raise plugin.MissingDependency("BeautifulSoup")
 
 class XkcdBrowser(plugin.Plugin, widgets.Window):
+    DEFAULT_CONFIG = {
+        'cache_dir': '/tmp/pymei/xkcd_cache'
+    }
     def __init__(self, config, app):
         super(XkcdBrowser, self).__init__()
 
@@ -35,12 +38,12 @@ class XkcdBrowser(plugin.Plugin, widgets.Window):
         self._current_comic = None
         self._current_data = None
 
-        self._downloader = XkcdDownloader(config.get('cache_dir', '/tmp/pymei/xkcd_cache'))
+        self._downloader = XkcdDownloader(config['cache_dir'])
 
         self._theme = mytheme = theme.get('plugins/xkcd')
         self._heading = pygame.font.Font(datafiles.get(mytheme['font']), mytheme['heading_size'])
 
-        self._padding = config.get('padding', 5)
+        self._padding = mytheme.get('padding', 5)
         self._frame_y = self._padding * 2 + self._heading.get_linesize()
         self._frame_x = self._padding
 

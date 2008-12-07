@@ -18,6 +18,8 @@ class Application(object):
         self._initScreen()
 
         self._plugins = self._config['plugins'].keys()
+        plugin.singletons.update_config(self._plugins)
+
         for pname in self._plugins:
             plugin.singletons.init(pname, self, self._config['plugins'][pname])
 

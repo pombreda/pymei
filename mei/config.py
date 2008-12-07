@@ -18,28 +18,38 @@ DEFAULT_CONFIG = {
     }
 }
 
-values = {}
+_values = {}
 
 # Recursive copy-update for dicts.
 # This means we perform a deep-copy. :-)
-def _deep_dict_update(dest, src):
-    print repr((dest, src))
+def deep_dict_update(dest, src):
     for (k, v) in src.iteritems():
-        print repr((k, v))
         if isinstance(v, dict):
             destv = dest.get(k)
             if not destv or not isinstance(destv, dict):
                 dest[k] = {}
-            _deep_dict_update(dest[k], v)
+            deep_dict_update(dest[k], v)
         else:
             dest[k] = v
 
-def load(fname):
-    global values
+def merge(first, second):
+    merged = {}
+    deep_dict_update(merged, first)
+    deep_dict_update(merged, second)
+    return merged
 
-    values = {}
-    _deep_dict_update(values, DEFAULT_CONFIG)
-    _deep_dict_update(values, yaml.load(open(fname)))
+def load(fname):
+    global _values
+    _values = merge(DEFAULT_CONFIG, yaml.load(open(fname)))
 
 def get(key):
-    return values[key]
+    keys = key.split('/')
+
+    conf = _values
+    for key in keys[:-1]:
+        if isinstance(conf, dict) and key in conf:
+            conf = conf[key]
+        else:
+            return None
+
+    return conf[keys[-1]]

@@ -118,9 +118,14 @@ class LircInput(plugin.Plugin):
         "power": pygame.K_POWER
     }
 
+    DEFAULT_CONFIG = {
+        'configuration': None,
+        'name': 'pymei'
+    }
+
     def __init__(self, config):
-        conffile = config.get('configuration')
-        name = config.get('name', 'pymei')
+        conffile = config['configuration']
+        name = config['name']
 
         self._lirc = pylirc.init(name, conffile)
         if not self._lirc:

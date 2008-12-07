@@ -4,6 +4,8 @@ import operator
 import os
 import logging
 
+import config
+
 class Plugin(object):
     pass
 
@@ -29,6 +31,14 @@ def load_plugins(plugin_path):
         except:
             logging.warn("Could not load plugin file '%s' from '%s'", plugin, plugin_path, exc_info=1)
     sys.path = sys.path[1:]
+
+# Get default settings for plugin by given name.
+def get_defaults(name):
+    plugin = get_plugin(name)
+    if hasattr(plugin, 'DEFAULT_CONFIG'):
+        return plugin.DEFAULT_CONFIG
+    else:
+        return {}
 
 def get_plugin(name):
     for plugin in Plugin.__subclasses__():
@@ -56,5 +66,17 @@ class _SingletonPlugins(object):
         for plugin in self.get_all(names):
             if hasattr(plugin, method):
                 getattr(plugin, method)(*args, **kwargs)
+
+    def update_config(self, names):
+        plugin_config = config.get('application/plugins')
+        for plugname in names:
+            if not plugname in plugin_config:
+                plugin_config[plugname] = {}
+
+            plugin = get_plugin(plugname)
+            default_config = get_defaults(plugname)
+            new_config = config.merge(default_config, plugin_config[plugname])
+
+            plugin_config[plugname] = new_config
 
 singletons = _SingletonPlugins()

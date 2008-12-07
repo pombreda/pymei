@@ -37,7 +37,11 @@ class Menu(widgets.Window):
             elif type == 'menu':
                 func = functools.partial(Menu, choices=choice['choices'])
             elif type == 'plugin':
-                func = functools.partial(plugin.get_plugin(choice['plugin']), choice)
+                # Apply default config for this plugin.
+                default_config = plugin.get_defaults(choice['plugin'])
+                cfg = config.merge(default_config, choice)
+
+                func = functools.partial(plugin.get_plugin(choice['plugin']), cfg)
             else:
                 raise "WTFBBQ" # TODO: Fix.
 

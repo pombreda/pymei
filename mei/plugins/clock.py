@@ -5,15 +5,16 @@ from mei import theme, plugin, datafiles
 from mei.gui import util
 
 class Clock(plugin.Plugin):
+    DEFAULT_CONFIG = {
+        'format': '%R'
+    }
     def __init__(self, app, config):
         super(Clock, self).__init__()
         self._app = app
         self._theme = theme.get('plugins/clock')
         self._font = pygame.font.Font(datafiles.get(self._theme['font']), self._theme['font_size'])
 
-        self._format = '%R'
-        if 'format' in config:
-            self._format = config['format']
+        self._format = config['format']
 
     def after_draw(self, screen):
         date = time.strftime(self._format)
