@@ -2,7 +2,7 @@ import pygame
 import time
 import logging
 
-import plugin, theme, config
+import plugin, theme, config, keybinds
 
 class Application(object):
     def __init__(self, entrypoint):
@@ -22,6 +22,22 @@ class Application(object):
 
         for pname in self._plugins:
             plugin.singletons.init(pname, self, self._config['plugins'][pname])
+
+        for (window, details) in config.get('keybinds'):
+            if window in self._plugins:
+                keybinds.load_global(details, plugin.singletons.get(window))
+            else:
+                keybinds.load_bindings(window, details)
+
+        for (plug, plugname) in plugin.get_plugins():
+            if not hasattr(plug, 'DEFAULT_KEYS'):
+                continue
+
+            if plugname not in self._plugins:
+                details = plug.DEFAULT_KEYS
+                keybinds.load_bindings(plugname, details, ignore_dupes=True)
+
+        plugin.singletons.apply_default_keybinds(self._plugins)
 
         self.continue_running = True
         self._window_stack = []

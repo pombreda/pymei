@@ -15,6 +15,7 @@ DEFAULT_CONFIG = {
         'separate_window': False
     }, 'menu': {
         'choices': []
+    }, 'keybinds': {
     }
 }
 

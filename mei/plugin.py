@@ -4,7 +4,7 @@ import operator
 import os
 import logging
 
-import config
+import config, keybinds
 
 class Plugin(object):
     pass
@@ -40,9 +40,21 @@ def get_defaults(name):
     else:
         return {}
 
+# Get default keybinds for plugin by given name.
+def get_default_keys(name):
+    plugin = get_plugin(name)
+    if hasattr(plugin, 'DEFAULT_KEYS'):
+        return plugin.DEFAULT_KEYS
+    else:
+        return {}
+
+
+def get_plugins():
+    return ((p, p.__name__) for p in Plugin.__subclasses__())
+
 def get_plugin(name):
-    for plugin in Plugin.__subclasses__():
-        if plugin.__name__ == name:
+    for (plugin, plugname) in get_plugins():
+        if plugname == name:
             return plugin
     return None
 
@@ -73,10 +85,14 @@ class _SingletonPlugins(object):
             if not plugname in plugin_config:
                 plugin_config[plugname] = {}
 
-            plugin = get_plugin(plugname)
             default_config = get_defaults(plugname)
             new_config = config.merge(default_config, plugin_config[plugname])
 
             plugin_config[plugname] = new_config
+
+    def apply_default_keybinds(self, names):
+        for plugname in names:
+            default_keybinds = get_default_keys(plugname)
+            keybinds.load_bindings(plugname, default_keybinds, ignore_dupes=True)
 
 singletons = _SingletonPlugins()
