@@ -6,6 +6,17 @@ from mei import plugin, theme, datafiles, config
 from mei.gui import videobrowser, widgets
 
 class Menu(widgets.Window):
+    DEFAULT_KEYS = {
+        'escape': 'quit',
+        'q': 'quit',
+        'backspace': 'quit',
+        'down': 'next_selection',
+        'up': 'previous_selection',
+        'right': 'select',
+        'return': 'select'
+
+    }
+
     def __init__(self, app, choices=None):
         super(Menu, self).__init__()
 
@@ -98,3 +109,23 @@ class Menu(widgets.Window):
 
             y += dy + self._theme['spacing']
 
+    # Various key handlers!
+    def quit(self, key):
+        self._app.close_window()
+
+    def next_selection(self, key):
+        if not self._choices:
+            return
+        self.selected = (self.selected + 1) % len(self._choices)
+
+    def previous_selection(self, key):
+        if not self._choices:
+            return
+        self.selected = (self.selected - 1) % len(self._choices)
+
+    def select(self, key):
+        if not self._choices:
+            return
+        win = self._choices[self.selected][1](self._app)
+        if win:
+            self._app.open_window(win)

@@ -26,18 +26,9 @@ class Application(object):
         for (window, details) in config.get('keybinds'):
             if window in self._plugins:
                 keybinds.load_global(details, plugin.singletons.get(window))
-            else:
-                keybinds.load_bindings(window, details)
-
-        for (plug, plugname) in plugin.get_plugins():
-            if not hasattr(plug, 'DEFAULT_KEYS'):
-                continue
-
-            if plugname not in self._plugins:
-                details = plug.DEFAULT_KEYS
-                keybinds.load_bindings(plugname, details, ignore_dupes=True)
 
         plugin.singletons.apply_default_keybinds(self._plugins)
+        self._loaded_keys = {}
 
         self.continue_running = True
         self._window_stack = []
@@ -73,12 +64,23 @@ class Application(object):
 
     def _handleEvent(self, event):
         if hasattr(event, 'key') and event.type == pygame.KEYDOWN:
-            # TODO: Should this be able to "intercept" the keypress
-            # so that the window doesn't receive it?
-            plugin.singletons.call(self._plugins, 'key', event)
-            if self._current_window:
-                self._current_window.key(event)
+            window_name = self.current_window.__class__.__name__
+            if not window_name in self._loaded_keys:
+                self._loadKeys(window_name)
 
+            keybinds.handle_key(event.key, self.current_window)
+
+    def _loadKeys(self, window):
+        self._loaded_keys[window] = True
+        keys = config.get('keybinds')
+        if window in keys:
+            keybinds.load_bindings(window, keys[window])
+
+        if not hasattr(self.current_window, 'DEFAULT_KEYS'):
+            return 
+
+        details = self.current_window.DEFAULT_KEYS
+        keybinds.load_bindings(window, details, ignore_dupes=True)
 
     @property
     def current_window(self):
