@@ -4,7 +4,7 @@ import time
 from mei import theme, plugin, datafiles
 from mei.gui import util
 
-class Clock(plugin.Plugin):
+class Clock(plugin.GlobalPlugin):
     DEFAULT_CONFIG = {
         'format': '%R'
     }

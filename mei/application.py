@@ -18,20 +18,11 @@ class Application(object):
         self._initScreen()
 
         self._plugins = self._config['plugins'].keys()
-        plugin.singletons.update_config(self._plugins)
-
-        for pname in self._plugins:
-            plugin.singletons.init(pname, self, self._config['plugins'][pname])
-
-        for (window, details) in config.get('keybinds'):
-            if window in self._plugins:
-                keybinds.load_global(details, plugin.singletons.get(window))
-
-        plugin.singletons.apply_default_keybinds(self._plugins)
-        self._loaded_keys = {}
+        plugin.globals.init(self._plugins, self)
 
         self.continue_running = True
         self._window_stack = []
+        self._loaded_keys = {}
 
         self._current_window = None
         self._current_window = entrypoint(self)
@@ -64,18 +55,23 @@ class Application(object):
 
     def _handleEvent(self, event):
         if hasattr(event, 'key') and event.type == pygame.KEYDOWN:
+            # We "dynamically" load keys on-demand, since it's quite clumsy
+            # to traverse the menu tree to find what plugins will be referenced.
             window_name = self.current_window.__class__.__name__
+            # A window's keys are loaded each time the window is (re)opened. :-)
             if not window_name in self._loaded_keys:
-                self._loadKeys(window_name)
+                self._load_keys(window_name)
+                self._loaded_keys[window_name] = True
 
             keybinds.handle_key(event.key, self.current_window)
 
-    def _loadKeys(self, window):
-        self._loaded_keys[window] = True
-        keys = config.get('keybinds')
-        if window in keys:
-            keybinds.load_bindings(window, keys[window])
+    def _load_keys(self, window):
+        keys = config.get('keybinds/%s' % window, {})
 
+        # First we load the config, here.
+        keybinds.load_bindings(window, keys)
+
+        # Then, if there are defaults, we "fill in the blanks" using them.
         if not hasattr(self.current_window, 'DEFAULT_KEYS'):
             return 
 
@@ -107,13 +103,13 @@ class Application(object):
         if not self._current_window:
             return False
 
-        plugin.singletons.call(self._plugins, 'before_draw', self.screen)
+        plugin.globals.call(self._plugins, 'before_draw', self.screen)
         self._current_window.draw(self.screen)
-        plugin.singletons.call(self._plugins, 'after_draw', self.screen)
+        plugin.globals.call(self._plugins, 'after_draw', self.screen)
     
         pygame.display.flip()
 
-        plugin.singletons.call(self._plugins, 'generate_events')
+        plugin.globals.call(self._plugins, 'generate_events')
 
         self._handleEvent(pygame.event.wait())
         for event in pygame.event.get():
@@ -124,4 +120,4 @@ class Application(object):
 
     def quit(self):
         pygame.quit()
-        plugin.singletons.call(self._plugins, 'quit')
+        plugin.globals.call(self._plugins, 'quit')

@@ -6,6 +6,9 @@ import logging
 
 import config, keybinds
 
+class GlobalPlugin(object):
+    pass
+
 class Plugin(object):
     pass
 
@@ -27,55 +30,66 @@ def load_plugins(plugin_path):
             logging.debug("Loading plugin '%s' from '%s'", plugin, plugin_path)
             __import__(plugin, fromlist=[''])
         except MissingDependency, (dependency):
-            logging.info("Could not load '%s', required dependency '%s' is missing.", plugin, dependency)
+            logging.info("Could not load plugin '%s', required dependency '%s' is missing.", plugin, dependency)
         except:
             logging.warn("Could not load plugin file '%s' from '%s'", plugin, plugin_path, exc_info=1)
     sys.path = sys.path[1:]
 
 # Get default settings for plugin by given name.
-def get_defaults(name):
-    plugin = get_plugin(name)
+def get_defaults(name, plugins=None):
+    plugin = get_plugin(name, plugins)
     if hasattr(plugin, 'DEFAULT_CONFIG'):
         return plugin.DEFAULT_CONFIG
     else:
         return {}
 
 # Get default keybinds for plugin by given name.
-def get_default_keys(name):
-    plugin = get_plugin(name)
+def get_default_keys(name, plugins=None):
+    plugin = get_plugin(name, plugins)
     if hasattr(plugin, 'DEFAULT_KEYS'):
         return plugin.DEFAULT_KEYS
     else:
         return {}
 
-
 def get_plugins():
     return ((p, p.__name__) for p in Plugin.__subclasses__())
 
-def get_plugin(name):
-    for (plugin, plugname) in get_plugins():
+def get_plugin(name, plugins=None):
+    if plugins is None:
+        plugins = get_plugins()
+
+    for (plugin, plugname) in plugins:
         if plugname == name:
             return plugin
     return None
 
-class _SingletonPlugins(object):
+class _GlobalPlugins(object):
     def __init__(self):
-        self._singleton_cache = {}
+        self._global_cache = {}
 
-    def init(self, name, *args, **kwargs):
-        if not name in self._singleton_cache:
-            self._singleton_cache[name] = get_plugin(name)(*args, **kwargs)
-        return self._singleton_cache[name]
+    def init(self, names, app):
+        self.update_config(names)
 
-    def get_all(self, names):
-        names = set(names).intersection(set(self._singleton_cache.iterkeys()))
-        return [self._singleton_cache[p] for p in names]
+        configs = config.get('application/plugins')
+        for name in names:
+            if not name in self._global_cache:
+                cfg = configs.get(name, {})
+                self._global_cache[name] = get_plugin(name, self.get_all())(app, cfg)
 
-    def get(self, name):
-        return self._singleton_cache[name]
+        self.load_keybinds(names, config.get('keybinds'))
+
+    def get_all(self):
+        return ((p, p.__name__) for p in GlobalPlugin.__subclasses__())
+
+    def get_these(self, names):
+        names = set(names).intersection(set(self._global_cache.iterkeys()))
+        return [self._global_cache[p] for p in names]
+
+    def get_instance(self, name):
+        return self._global_cache[name]
 
     def call(self, names, method, *args, **kwargs):
-        for plugin in self.get_all(names):
+        for plugin in self.get_these(names):
             if hasattr(plugin, method):
                 getattr(plugin, method)(*args, **kwargs)
 
@@ -85,14 +99,19 @@ class _SingletonPlugins(object):
             if not plugname in plugin_config:
                 plugin_config[plugname] = {}
 
-            default_config = get_defaults(plugname)
+            default_config = get_defaults(plugname, self.get_all())
             new_config = config.merge(default_config, plugin_config[plugname])
 
             plugin_config[plugname] = new_config
 
-    def apply_default_keybinds(self, names):
+    def load_keybinds(self, names, binds):
         for plugname in names:
-            default_keybinds = get_default_keys(plugname)
-            keybinds.load_bindings(plugname, default_keybinds, ignore_dupes=True)
+            # First we apply any in configuration.
+            if plugname in binds:
+                keybinds.load_global(binds[plugname], self.get_instance(plugname))
 
-singletons = _SingletonPlugins()
+            # Then we apply the defaults, without overwriting the old ones.
+            default_keybinds = get_default_keys(plugname, self.get_all())
+            keybinds.load_global(default_keybinds, self.get_instance(plugname), ignore_dupes=True)
+
+globals = _GlobalPlugins()

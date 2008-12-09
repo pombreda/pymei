@@ -43,7 +43,7 @@ def load(fname):
     global _values
     _values = merge(DEFAULT_CONFIG, yaml.load(open(fname)))
 
-def get(key):
+def get(key, default=None):
     keys = key.split('/')
 
     conf = _values
@@ -51,6 +51,6 @@ def get(key):
         if isinstance(conf, dict) and key in conf:
             conf = conf[key]
         else:
-            return None
+            return default
 
-    return conf[keys[-1]]
+    return conf.get(keys[-1], default)

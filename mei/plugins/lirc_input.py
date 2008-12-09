@@ -11,7 +11,7 @@ except ImportError:
 class LircError(Exception):
     pass
 
-class LircInput(plugin.Plugin):
+class LircInput(plugin.GlobalPlugin):
     _KEY_LOOKUP = {
         "backspace": pygame.K_BACKSPACE,
         "tab": pygame.K_TAB,
