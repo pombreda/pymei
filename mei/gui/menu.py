@@ -14,7 +14,6 @@ class Menu(widgets.Window):
         'up': 'previous_selection',
         'right': 'select',
         'return': 'select'
-
     }
 
     def __init__(self, app, choices=None):
@@ -79,21 +78,6 @@ class Menu(widgets.Window):
         h += (len(self._choices) - 1) * self._theme['spacing']
 
         return h
-
-    def key(self, event):
-        if event.key == pygame.K_ESCAPE or event.key == pygame.K_q or event.key == pygame.K_BACKSPACE:
-            self._app.close_window()
-        elif event.key == pygame.K_DOWN:
-            if self._choices:
-                self.selected = (self.selected + 1) % len(self._choices)
-        elif event.key == pygame.K_UP:
-            if self._choices:
-                self.selected = (self.selected - 1) % len(self._choices)
-        elif event.key == pygame.K_RETURN or event.key == pygame.K_RIGHT:
-            if self._choices:
-                win = self._choices[self.selected][1](self._app)
-                if win:
-                    self._app.open_window(win)
 
     def draw(self, screen):
         super(Menu, self).draw(screen)

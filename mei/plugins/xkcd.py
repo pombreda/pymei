@@ -30,6 +30,16 @@ class XkcdBrowser(plugin.Plugin, widgets.Window):
     DEFAULT_CONFIG = {
         'cache_dir': '/tmp/pymei/xkcd_cache'
     }
+    DEFAULT_KEYS = {
+        'space': 'next_comic',
+        'backspace': 'prev_comic',
+        'up': 'scroll_up',
+        'down': 'scroll_down',
+        'left': 'scroll_left',
+        'right': 'scroll_right',
+        'q': 'quit'
+    }
+
     def __init__(self, config, app):
         super(XkcdBrowser, self).__init__()
 
@@ -91,40 +101,46 @@ class XkcdBrowser(plugin.Plugin, widgets.Window):
 
         self._current_data = (image, text)
 
-    def key(self, event):
+    # Key actions!
+    def next_comic(self, key):
         last_comic = self._downloader.getCachedComics()[-1]
 
-        if event.key == pygame.K_SPACE:
-            if not self._current_comic:
-                self._current_comic = 1
-            else:
-                self._current_comic = (self._current_comic % last_comic) + 1
+        self._current_data = None
+        if not self._current_comic:
+            self._current_comic = 1
+        else:
+            self._current_comic = (self._current_comic % last_comic) + 1
 
-            self._current_data = None
-        elif event.key == pygame.K_BACKSPACE:
-            if not self._current_comic:
-                self._current_comic = last_comic
-            elif self._current_comic == 1:
-                self._current_comic = self._downloader.newest_comic
-            else:
-                self._current_comic -= 1
+    def prev_comic(self, key):
+        last_comic = self._downloader.getCachedComics()[-1]
 
-            self._current_data = None
-        elif event.key == pygame.K_q:
-            self._app.close_window()
-        elif event.key == pygame.K_UP:
-            self._scrollable_frame.scrollY(-50)
-        elif event.key == pygame.K_DOWN:
-            self._scrollable_frame.scrollY(50)
-        elif event.key == pygame.K_LEFT:
-            self._scrollable_frame.scrollX(-50)
-        elif event.key == pygame.K_RIGHT:
-            self._scrollable_frame.scrollX(50)
-        elif event.key == pygame.K_PAGEUP:
-            self._scrollable_frame.scrollY(-200)
-        elif event.key == pygame.K_PAGEDOWN:
-            self._scrollable_frame.scrollY(200)
+        self._current_data = None
+        if not self._current_comic:
+            self._current_comic = last_comic
+        elif self._current_comic == 1:
+            self._current_comic = self._downloader.newest_comic
+        else:
+            self._current_comic -= 1
 
+    def quit(self, key):
+        self._app.close_window()
+
+    def scroll_up(self, key):
+        self._scrollable_frame.scrollY(-50)
+
+    def scroll_down(self, key):
+        self._scrollable_frame.scrollY(50)
+
+    def scroll_left(self, key):
+        self._scrollable_frame.scrollX(-50)
+
+    def scroll_right(self, key):
+        self._scrollable_frame.scrollX(50)
+
+#        elif event.key == pygame.K_PAGEUP:
+#            self._scrollable_frame.scrollY(-200)
+#        elif event.key == pygame.K_PAGEDOWN:
+#            self._scrollable_frame.scrollY(200)
 
 class XkcdDownloader(object):
     def __init__(self, cache_dir):

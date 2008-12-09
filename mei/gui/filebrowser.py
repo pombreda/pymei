@@ -8,6 +8,21 @@ from mei import dirlist, theme, datafiles
 from mei.gui import util, widgets
 
 class FileBrowser(widgets.Window):
+    DEFAULT_KEYS = {
+        'backspace': 'go_up',
+        'left': 'go_up',
+        'q': 'quit',
+        'escape': 'quit',
+        'down': 'next_entry',
+        'up': 'prev_entry',
+        'pagedown': 'next_page',
+        'pageup': 'prev_page',
+        'home': 'first_entry',
+        'end': 'last_entry',
+        'right': 'go_selected',
+        'return': 'execute_selected'
+    }
+
     def __init__(self, title, top_path, app):
         super(FileBrowser, self).__init__()
         self._top_path = os.path.realpath(top_path)
@@ -105,31 +120,35 @@ class FileBrowser(widgets.Window):
         else:
             return self._content[1][i - len(self._content[0])]
 
-    def goSelected(self):
+    # Keys!
+    def execute_selected(self, _):
+        self.execute(os.path.join(self._path, self._getSelected()))
+
+    def go_up(self, _):
+        self.go('..')
+
+    def go_selected(self, _):
         # Only go if it's a dir. :)
         if self._listview.selected < len(self._content[0]):
             self.go(self._content[0][self._listview.selected])
 
-    def key(self, event):
-        if event.key == pygame.K_BACKSPACE:
-            self.go('..')
-        elif event.key == pygame.K_q or event.key == pygame.K_ESCAPE:
-            self._app.close_window()
-        elif event.key == pygame.K_DOWN:
-            self._listview.selected += 1
-        elif event.key == pygame.K_PAGEDOWN:
-            self._listview.selected += self._listview.getViewEntries() / 2
-        elif event.key == pygame.K_HOME:
-            self._listview.selected = 0
-        elif event.key == pygame.K_UP:
-            self._listview.selected -= 1
-        elif event.key == pygame.K_PAGEUP:
-            self._listview.selected -= self._listview.getViewEntries()/ 2
-        elif event.key == pygame.K_END:
-            self._listview.selected = -1
-        elif event.key == pygame.K_RIGHT:
-            self.goSelected()
-        elif event.key == pygame.K_LEFT:
-            self.go('..')
-        elif event.key == pygame.K_RETURN:
-            self.execute(os.path.join(self._path, self._getSelected()))
+    def quit(self, _):
+        self._app.close_window()
+
+    def next_entry(self, _):
+        self._listview.selected += 1
+
+    def next_page(self, _):
+        self._listview.selected += self._listview.getViewEntries() / 2
+
+    def prev_entry(self, _):
+        self._listview.selected -= 1
+
+    def prev_page(self, _):
+        self._listview.selected -= self._listview.getViewEntries()/ 2
+
+    def first_entry(self, _):
+        self._listview.selected = 0
+
+    def last_entry(self, _):
+        self._listview.selected = -1

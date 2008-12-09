@@ -20,6 +20,11 @@ def get_path(bin):
     return None
 
 class ProcessRunner(widgets.Window):
+    DEFAULT_KEYS = {
+        'q': 'quit',
+        'escape': 'quit'
+    }
+
     def __init__(self, app, cmd, path, theme):
         super(ProcessRunner, self).__init__()
 
@@ -37,10 +42,6 @@ class ProcessRunner(widgets.Window):
 
         self._process_dead = False
         self._old_sig = signal.signal(signal.SIGCHLD, self.processExit)
-
-    def key(self, event):
-        if event.key == pygame.K_LSUPER or event.key == pygame.K_RSUPER:
-            self._quit()
 
     def processExit(self, signum, stackframe):
         os.wait()
@@ -75,7 +76,7 @@ class ProcessRunner(widgets.Window):
         if not self._pid:
             self._start()
 
-        text1 = '%s is currently running! Press Windows-button to kill it.' % self._cmd[0]
+        text1 = '%s is currently running!' % self._cmd[0]
         text2 = 'Command: %s "%s"' % (self._cmd[0], '" "'.join(self._cmd[1:]))
 
         (width1, height1) = self._font.size(text1)
@@ -95,3 +96,7 @@ class ProcessRunner(widgets.Window):
 
         if self._process_dead:
             self._quit()
+
+    # Key bindings. ;-)
+    def quit(self, _):
+        self._quit()
