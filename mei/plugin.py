@@ -16,7 +16,7 @@ def load_plugins(plugin_path):
     if not os.path.isdir(plugin_path):
         return
 
-    plugre = re.compile(r'^[A-Za-z_]+\.py$')
+    plugre = re.compile(r'^[^_][A-Za-z_]*\.py$')
     files = filter(lambda x: os.path.isfile(os.path.join(plugin_path, x)), os.listdir(plugin_path))
     plugins = filter(plugre.search, files)
     plugins = [p[:-3] for p in plugins]

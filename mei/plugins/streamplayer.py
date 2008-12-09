@@ -10,6 +10,3 @@ class StreamPlayer(plugin.Plugin, vlc.Vlc):
 
         self._app = app
         self._config = config
-
-    def key(self, event):
-        self._app.close_window()

@@ -102,7 +102,7 @@ class XkcdBrowser(plugin.Plugin, widgets.Window):
         self._current_data = (image, text)
 
     # Key actions!
-    def next_comic(self, key):
+    def action_next_comic(self, _):
         last_comic = self._downloader.getCachedComics()[-1]
 
         self._current_data = None
@@ -111,7 +111,7 @@ class XkcdBrowser(plugin.Plugin, widgets.Window):
         else:
             self._current_comic = (self._current_comic % last_comic) + 1
 
-    def prev_comic(self, key):
+    def action_prev_comic(self, _):
         last_comic = self._downloader.getCachedComics()[-1]
 
         self._current_data = None
@@ -122,19 +122,19 @@ class XkcdBrowser(plugin.Plugin, widgets.Window):
         else:
             self._current_comic -= 1
 
-    def quit(self, key):
+    def action_quit(self, _):
         self._app.close_window()
 
-    def scroll_up(self, key):
+    def action_scroll_up(self, _):
         self._scrollable_frame.scrollY(-50)
 
-    def scroll_down(self, key):
+    def action_scroll_down(self, _):
         self._scrollable_frame.scrollY(50)
 
-    def scroll_left(self, key):
+    def action_scroll_left(self, _):
         self._scrollable_frame.scrollX(-50)
 
-    def scroll_right(self, key):
+    def action_scroll_right(self, _):
         self._scrollable_frame.scrollX(50)
 
 #        elif event.key == pygame.K_PAGEUP:

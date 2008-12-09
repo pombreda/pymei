@@ -14,7 +14,11 @@ def _get_pykey(key):
 
 def load_global(details, instance, ignore_dupes=False):
     for (key, action) in details.iteritems():
-        pkey = _get_pykey(key)
+        if key == '*':
+            pkey = '*'
+        else:
+            pkey = _get_pykey(key)
+
         if not pkey:
             logging.error('Global keybinding invalid, keyname %s isnt known.', key)
             continue
@@ -24,10 +28,11 @@ def load_global(details, instance, ignore_dupes=False):
                 logging.warn('Global key %s is already bound.', key)
             continue
 
-        if not hasattr(instance, action):
+        meth = 'action_%s' % action
+        if not hasattr(instance, meth):
             logging.error('%s is not a valid action to bind to!', action)
         else:
-            _keybinds_global[pkey] = getattr(instance, action)
+            _keybinds_global[pkey] = getattr(instance, meth)
 
 def load_bindings(name, details, ignore_dupes=False):
     if not name in _keybinds:
@@ -36,7 +41,11 @@ def load_bindings(name, details, ignore_dupes=False):
     section = _keybinds[name]
 
     for (key, action) in details.iteritems():
-        pkey = _get_pykey(key)
+        if key == '*':
+            pkey = '*'
+        else:
+            pkey = _get_pykey(key)
+
         if not pkey:
             logging.error('Keybinding for %s.%s invalid, keyname %s invalid.', name, action, key)
             continue
@@ -49,6 +58,8 @@ def load_bindings(name, details, ignore_dupes=False):
         section[pkey] = action
 
 def _call_handler(inst, meth, arg):
+    meth = 'action_%s' % meth
+
     if not hasattr(inst, meth):
         return False
 
@@ -59,6 +70,8 @@ def handle_key(key, current_window):
     if key in _keybinds_global:
         # Allow interception?
         _keybinds_global[key](key)
+    elif '*' in _keybinds_global:
+        _keybinds_global['*'](key)
 
     if not current_window:
         logging.warn('No active window; ignoring key input.')
@@ -70,8 +83,11 @@ def handle_key(key, current_window):
         return
 
     section = _keybinds[name]
-    if not key in section:
+    if not key in section and not '*' in section:
         logging.debug('Ignoring keypress %s, not bound.', key)
     else:
+        if not key in section:
+            key = '*'
+
         if not _call_handler(current_window, section[key], key):
             logging.error('Invalid action %s for %s.', section[key], name)

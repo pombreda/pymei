@@ -94,20 +94,20 @@ class Menu(widgets.Window):
             y += dy + self._theme['spacing']
 
     # Various key handlers!
-    def quit(self, key):
+    def action_quit(self, _):
         self._app.close_window()
 
-    def next_selection(self, key):
+    def action_next_selection(self, _):
         if not self._choices:
             return
         self.selected = (self.selected + 1) % len(self._choices)
 
-    def previous_selection(self, key):
+    def action_previous_selection(self, _):
         if not self._choices:
             return
         self.selected = (self.selected - 1) % len(self._choices)
 
-    def select(self, key):
+    def action_select(self, _):
         if not self._choices:
             return
         win = self._choices[self.selected][1](self._app)

@@ -121,34 +121,34 @@ class FileBrowser(widgets.Window):
             return self._content[1][i - len(self._content[0])]
 
     # Keys!
-    def execute_selected(self, _):
+    def action_execute_selected(self, _):
         self.execute(os.path.join(self._path, self._getSelected()))
 
-    def go_up(self, _):
+    def action_go_up(self, _):
         self.go('..')
 
-    def go_selected(self, _):
+    def action_go_selected(self, _):
         # Only go if it's a dir. :)
         if self._listview.selected < len(self._content[0]):
             self.go(self._content[0][self._listview.selected])
 
-    def quit(self, _):
+    def action_quit(self, _):
         self._app.close_window()
 
-    def next_entry(self, _):
+    def action_next_entry(self, _):
         self._listview.selected += 1
 
-    def next_page(self, _):
+    def action_next_page(self, _):
         self._listview.selected += self._listview.getViewEntries() / 2
 
-    def prev_entry(self, _):
+    def action_prev_entry(self, _):
         self._listview.selected -= 1
 
-    def prev_page(self, _):
+    def action_prev_page(self, _):
         self._listview.selected -= self._listview.getViewEntries()/ 2
 
-    def first_entry(self, _):
+    def action_first_entry(self, _):
         self._listview.selected = 0
 
-    def last_entry(self, _):
+    def action_last_entry(self, _):
         self._listview.selected = -1

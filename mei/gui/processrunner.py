@@ -98,5 +98,5 @@ class ProcessRunner(widgets.Window):
             self._quit()
 
     # Key bindings. ;-)
-    def quit(self, _):
+    def action_quit(self, _):
         self._quit()
