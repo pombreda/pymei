@@ -1,5 +1,6 @@
 import logging
 import pygame
+import functools
 
 _keybinds_global = {}
 _keybinds = {}
@@ -29,10 +30,11 @@ def load_global(details, instance, ignore_dupes=False):
             continue
 
         meth = 'action_%s' % action
-        if not hasattr(instance, meth):
+        handler = _get_handler(instance, meth)
+        if handler is None:
             logging.error('%s is not a valid action to bind to!', action)
         else:
-            _keybinds_global[pkey] = getattr(instance, meth)
+            _keybinds_global[pkey] = handler
 
 def load_bindings(name, details, ignore_dupes=False):
     if not name in _keybinds:
@@ -57,13 +59,47 @@ def load_bindings(name, details, ignore_dupes=False):
 
         section[pkey] = action
 
+def _get_handler_static_arg(meth, arg):
+    def wrapped_meth(*args):
+        input_args = list(args)
+        input_args.append(arg)
+        return meth(*input_args)
+
+    return wrapped_meth
+
+def _get_handler(inst, act):
+    meth = act
+    args = None
+
+    if ' ' in act:
+        meth, args = act.split(' ', 1)
+
+    if not hasattr(inst, meth):
+        return None
+
+    func = getattr(inst, meth)
+    if not func.func_code.co_argcount in xrange(2, 4):
+        logging.error('Handler for %s is broken! Report to author. :-)', meth)
+        return None
+
+    if args is None:
+        return func
+    else:
+        if func.func_code.co_argcount != 3:
+            logging.error('%s does not take a parameter. Fix your keybinds in the configuration!', meth)
+            return None
+
+        return _get_handler_static_arg(func, args)
+
 def _call_handler(inst, meth, arg):
     meth = 'action_%s' % meth
 
-    if not hasattr(inst, meth):
+    handler = _get_handler(inst, meth)
+
+    if handler is None:
         return False
 
-    getattr(inst, meth)(arg)
+    handler(arg)
     return True
 
 def handle_key(key, current_window):

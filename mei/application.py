@@ -58,7 +58,7 @@ class Application(object):
             # We "dynamically" load keys on-demand, since it's quite clumsy
             # to traverse the menu tree to find what plugins will be referenced.
             window_name = self.current_window.__class__.__name__
-            # A window's keys are loaded each time the window is (re)opened. :-)
+            # A window's keys are loaded only once.
             if not window_name in self._loaded_keys:
                 self._load_keys(window_name)
                 self._loaded_keys[window_name] = True

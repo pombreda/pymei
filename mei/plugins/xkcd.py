@@ -33,10 +33,12 @@ class XkcdBrowser(plugin.Plugin, widgets.Window):
     DEFAULT_KEYS = {
         'space': 'next_comic',
         'backspace': 'prev_comic',
-        'up': 'scroll_up',
-        'down': 'scroll_down',
-        'left': 'scroll_left',
-        'right': 'scroll_right',
+        'up': 'scroll_vertical -50',
+        'down': 'scroll_vertical 50',
+        'pageup': 'scroll_vertical -200',
+        'pagedown': 'scroll_vertical 200',
+        'left': 'scroll_horizontal -50',
+        'right': 'scroll_horizontal 50',
         'q': 'quit'
     }
 
@@ -125,22 +127,11 @@ class XkcdBrowser(plugin.Plugin, widgets.Window):
     def action_quit(self, _):
         self._app.close_window()
 
-    def action_scroll_up(self, _):
-        self._scrollable_frame.scrollY(-50)
+    def action_scroll_horizontal(self, _, args='50'):
+        self._scrollable_frame.scrollX(int(args))
 
-    def action_scroll_down(self, _):
-        self._scrollable_frame.scrollY(50)
-
-    def action_scroll_left(self, _):
-        self._scrollable_frame.scrollX(-50)
-
-    def action_scroll_right(self, _):
-        self._scrollable_frame.scrollX(50)
-
-#        elif event.key == pygame.K_PAGEUP:
-#            self._scrollable_frame.scrollY(-200)
-#        elif event.key == pygame.K_PAGEDOWN:
-#            self._scrollable_frame.scrollY(200)
+    def action_scroll_vertical(self, _, args='50'):
+        self._scrollable_frame.scrollY(int(args))
 
 class XkcdDownloader(object):
     def __init__(self, cache_dir):

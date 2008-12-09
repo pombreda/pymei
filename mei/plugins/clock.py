@@ -8,6 +8,7 @@ class Clock(plugin.GlobalPlugin):
     DEFAULT_CONFIG = {
         'format': '%R'
     }
+
     def __init__(self, app, config):
         super(Clock, self).__init__()
         self._app = app
