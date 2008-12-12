@@ -1,6 +1,6 @@
 import pygame
 
-import os, subprocess, signal, logging, sys, re
+import os, subprocess, signal, logging, sys, re, fcntl
 
 from mei.gui import widgets
 
@@ -50,6 +50,9 @@ class MplayerEmbedded(widgets.Widget):
         # We grab this for version detection.
         line = self._process.stdout.readline()
 
+        # Set non-blocking mode.
+        fcntl.fcntl(self._process.stdout.fileno(), fcntl.F_SETFL, os.O_NONBLOCK)
+
         if not line.startswith('MPlayer '):
             logging.warn("Couldn't understand first line of mplayer output, tried to parse for version: %s", line)
         else:
@@ -89,15 +92,30 @@ class MplayerEmbedded(widgets.Widget):
             self._startMplayer()
 
         while self._process:
+            self._relayMplayerStdout()    
+
             event = pygame.event.wait()
             if hasattr(event, 'key') and event.type == pygame.KEYDOWN:
                 self.key(event)
 
         self._quit()
 
+    def _relayMplayerStdout(self):
+        while True:
+            try:
+                bytes = self._process.stdout.read(1024)
+                sys.stdout.write(bytes)
+            except IOError:
+                bytes = ''
+
+            if len(bytes) < 1024:
+                break
+
     def _quit(self):
-        if self._process and self._process.pid is not None:
-           os.kill(self._process.pid, signal.SIGKILL) 
+        if self._process:
+            self._relayMplayerStdout()    
+            if self._process.pid is not None:
+                os.kill(self._process.pid, signal.SIGKILL) 
 
         # This ensures a quick redraw. :)
         pygame.event.post(pygame.event.Event(pygame.USEREVENT))
