@@ -4,7 +4,7 @@ import os
 
 import pygame
 
-from mei import dirlist, theme, datafiles
+from mei import dirlist, theme, datafiles, config
 from mei.gui import util, widgets
 
 class FileBrowser(widgets.Window):
@@ -58,6 +58,12 @@ class FileBrowser(widgets.Window):
 
         height += self._font.get_linesize()
         width += self._scrollbar.size()[0]
+        
+        # prevent the list to go over the screen borders
+        resolutionWidth = config.get('application/resolution')[0]
+       
+        if width > resolutionWidth:
+            width = resolutionWidth
 
         return (width, height)
 

@@ -27,7 +27,7 @@ class Button(widget.Widget):
 
         boxsurf.fill(color + [128])
         w = self.theme['border_width']
-        pygame.draw.lines(boxsurf, color, True, [(0, 0), (dim[0]-1, 0), (dim[0]-1, dim[1]-1), (0, dim[1]-1)])
+        pygame.draw.lines(boxsurf, color, True, [(0, 0), (dim[0]-1, 0), (dim[0]-1, dim[1]-1), (0, dim[1]-1)], w)
         return boxsurf
 
     def draw(self, surf, pos, hilight):
