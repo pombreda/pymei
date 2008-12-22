@@ -92,6 +92,9 @@ def _get_handler(inst, act):
         return _get_handler_static_arg(func, args)
 
 def _call_handler(inst, meth, arg):
+    if meth is 'unbound':
+        return True
+
     meth = 'action_%s' % meth
 
     handler = _get_handler(inst, meth)
