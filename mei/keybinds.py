@@ -15,8 +15,8 @@ def _get_pykey(key):
 
 def load_global(details, instance, ignore_dupes=False):
     for (key, action) in details.iteritems():
-        if key == '*':
-            pkey = '*'
+        if key == 'all':
+            pkey = 'all'
         else:
             pkey = _get_pykey(key)
 
@@ -43,8 +43,8 @@ def load_bindings(name, details, ignore_dupes=False):
     section = _keybinds[name]
 
     for (key, action) in details.iteritems():
-        if key == '*':
-            pkey = '*'
+        if key == 'all':
+            pkey = 'all'
         else:
             pkey = _get_pykey(key)
 
@@ -92,7 +92,7 @@ def _get_handler(inst, act):
         return _get_handler_static_arg(func, args)
 
 def _call_handler(inst, meth, arg):
-    if meth is 'unbound':
+    if meth == 'unbound':
         return True
 
     meth = 'action_%s' % meth
@@ -109,8 +109,8 @@ def handle_key(key, current_window):
     if key in _keybinds_global:
         # Allow interception?
         _keybinds_global[key](key)
-    elif '*' in _keybinds_global:
-        _keybinds_global['*'](key)
+    elif 'all' in _keybinds_global:
+        _keybinds_global['all'](key)
 
     if not current_window:
         logging.warn('No active window; ignoring key input.')
@@ -122,11 +122,11 @@ def handle_key(key, current_window):
         return
 
     section = _keybinds[name]
-    if not key in section and not '*' in section:
+    if not key in section and not 'all' in section:
         logging.debug('Ignoring keypress %s, not bound.', key)
     else:
         if not key in section:
-            key = '*'
+            key = 'all'
 
         if not _call_handler(current_window, section[key], key):
             logging.error('Invalid action %s for %s.', section[key], name)

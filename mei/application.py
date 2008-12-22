@@ -54,9 +54,11 @@ class Application(object):
     fullscreen = property(getFullscreen, setFullscreen)
 
     def _handleEvent(self, event):
-        if hasattr(event, 'key') and event.type == pygame.KEYDOWN:
-            # We "dynamically" load keys on-demand, since it's quite clumsy
-            # to traverse the menu tree to find what plugins will be referenced.
+        if event.type == pygame.QUIT:
+            self._current_window = None
+        elif hasattr(event, 'key') and event.type == pygame.KEYDOWN:
+            # We load keys on-demand, since it's quite clumsy to traverse the
+            # menu tree to find what plugins will be referenced.
             window_name = self.current_window.__class__.__name__
             # A window's keys are loaded only once.
             if not window_name in self._loaded_keys:

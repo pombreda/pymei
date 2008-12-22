@@ -5,7 +5,7 @@ from mei.gui import util, widgets
 
 class HelloWorld(plugin.Plugin, widgets.Window):
     DEFAULT_KEYS = {
-        '*': 'quit'
+        'all': 'quit'
     }
 
     def __init__(self, config, app):
