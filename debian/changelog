@@ -1,0 +1,17 @@
+pymei (0.2.0-2~ppa1) hardy; urgency=low
+
+  * Retry upload.
+
+ -- Jørgen Pedersen Tjernø <jorgen@devsoft.no>  Thu, 01 Jan 2009 18:16:12 +0100
+
+pymei (0.2.0-1~ppa2) hardy; urgency=low
+
+  * Fixed various packaging issues, hopefully.
+
+ -- Jørgen Pedersen Tjernø <jorgen@devsoft.no>  Thu, 01 Jan 2009 18:08:38 +0100
+
+pymei (0.2.0-1~ppa1) hardy; urgency=low
+
+  * Initial release.
+
+ -- Jørgen Pedersen Tjernø <jorgen@devsoft.no>  Thu, 01 Jan 2009 17:03:00 +0200

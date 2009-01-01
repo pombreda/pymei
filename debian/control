@@ -1,0 +1,25 @@
+Source: pymei
+Section: python
+Priority: extra
+Maintainer: Jørgen Pedersen Tjernø <jorgen@devsoft.no>
+Build-Depends: debhelper (>= 5), cdbs (>= 0.4.49), python (>= 2.4)
+Build-Depends-Indep: python-support (>= 0.5.3)
+Homepage: http://www.pymei.org/
+Standards-Version: 3.8.0
+
+Package: pymei
+XB-Python-Version: ${python:Versions}
+Architecture: all
+Depends: ${python:Depends}, python (>= 2.4), python-pygame (>= 1.7.0), ${misc:Depends}
+Suggests: python-pylirc, python-beautifulsoup
+Description: a media interface / htpc application written in Python
+ PyMei is a media interface / htpc application written in Python, with a
+ modularized and extensible architecture. It supports plugins and themes,
+ and the default plugins are:
+  * Clock: add a constantly shown clock.
+  * LircInput: support input from a LIRC device. (requires python-pylirc)
+  * XkcdBrowser: download and display comics from http://xkcd.com
+  * StreamPlayer: open a videoplayer with a predefined stream
+ In addition, it supports an arbitrary number of levels of menus to organize
+ the functionality you decide to use, and has a filesystem browser that allows
+ easy video playback.
