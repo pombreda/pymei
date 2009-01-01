@@ -9,52 +9,56 @@ from mei import application, plugin, theme, datafiles, config
 from mei.gui import menu 
 from mei.version import *
 
-# Load global or user config.
-config_loaded = False
-for config_file in [
-                    './pymei.config', 
-                    '~/.pymei/config',
-                    '/etc/pymei.config',
-                    os.path.join(sys.prefix, 'etc/pymei.config')
-                   ]:
-    config_file = os.path.expanduser(config_file)
-    if os.path.isfile(config_file):
-        config.load(config_file)
-        config_loaded = True
-        print "Using file '%s' for config." % config_file
-        break
+def main():
+    # Load global or user config.
+    config_loaded = False
+    for config_file in [
+                        './pymei.config', 
+                        '~/.pymei/config',
+                        '/etc/pymei.config',
+                        os.path.join(sys.prefix, 'etc/pymei.config')
+                       ]:
+        config_file = os.path.expanduser(config_file)
+        if os.path.isfile(config_file):
+            config.load(config_file)
+            config_loaded = True
+            print "Using file '%s' for config." % config_file
+            break
 
-# We can't start without a config! :)
-if not config_loaded:
-    print >>sys.stderr, "Unable to find config!"
-    sys.exit(1)
+    # We can't start without a config! :)
+    if not config_loaded:
+        print >>sys.stderr, "Unable to find config!"
+        sys.exit(1)
 
-if config.get('debug'):
-    logging.basicConfig(level=logging.DEBUG)
-else:
-    logging.basicConfig(level=logging.INFO)
+    if config.get('debug'):
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
 
-searchpath = ['.', os.path.expanduser('~/.pymei'), os.path.join(sys.prefix, 'share/pymei')]
-theme.set_searchpath(searchpath)
-datafiles.set_searchpath(searchpath)
+    searchpath = ['.', os.path.expanduser('~/.pymei'), os.path.join(sys.prefix, 'share/pymei')]
+    theme.set_searchpath(searchpath)
+    datafiles.set_searchpath(searchpath)
 
-# Load global & user plugins.
-for plugdir in [os.path.join(os.path.dirname(mei.__file__), 'plugins'), os.path.expanduser('~/.pymei/plugins')]:
-    logging.debug("Loading plugins from dir '%s'" % plugdir)
-    plugin.load_plugins(plugdir)
+    # Load global & user plugins.
+    for plugdir in [os.path.join(os.path.dirname(mei.__file__), 'plugins'), os.path.expanduser('~/.pymei/plugins')]:
+        logging.debug("Loading plugins from dir '%s'" % plugdir)
+        plugin.load_plugins(plugdir)
 
-logging.info('Starting %s v%s' % (APP_NAME, APP_VERSION))
+    logging.info('Starting %s v%s' % (APP_NAME, APP_VERSION))
 
-# Start mei.application with Menu as the first screen.
-current_app = application.Application(menu.Menu)
+    # Start mei.application with Menu as the first screen.
+    current_app = application.Application(menu.Menu)
 
-# If we're running in debug mode, start the debug server.
-if config.get('debug'):
-    # Make some neat aliases for the debug server.
-    _ = a = app = current_app
-    from mei import debugserver
-    (debugthread, debugsvr) = debugserver.spawn(locals())
+    # If we're running in debug mode, start the debug server.
+    if config.get('debug'):
+        # Make some neat aliases for the debug server.
+        _ = a = app = current_app
+        from mei import debugserver
+        (debugthread, debugsvr) = debugserver.spawn(locals())
 
-while current_app.run():
-    pass
-current_app.quit()
+    while current_app.run():
+        pass
+    current_app.quit()
+
+if __name__ == '__main__':
+    main()

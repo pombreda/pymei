@@ -9,7 +9,7 @@ menu:
         font_size: 36
         color: [160, 160, 160]
         color_hilight: [210, 210, 210]
-        border_width: 2
+        border_width: 1
 
 processrunner:
     font_size: 22
