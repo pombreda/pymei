@@ -1,0 +1,57 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH PYMEI 1 "January 1, 2009"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+pymei \- a media interface / htpc application written in Python
+.SH SYNOPSIS
+.B pymei
+.SH DESCRIPTION
+PyMei is a media interface / htpc application written in Python, with a
+modularized and extensible architecture. It supports plugins and themes,
+and the default plugins are:
+
+.B * Clock.
+.RS
+Add a constantly shown clock.
+.RE
+
+.B * LircInput.
+.RS
+Support input from a LIRC device. (requires python-pylirc)
+.RE
+
+.B * XkcdBrowser.
+.RS
+Download and display comics from http://xkcd.com
+.RE
+
+.B * StreamPlayer.
+.RS
+Open a videoplayer with a predefined stream.
+.RE
+
+In addition, it supports an arbitrary number of levels of menus to organize
+the functionality you decide to use, and has a filesystem browser that allows
+easy video playback.
+
+.SH FILES
+~/.pymei/ 
+.RS
+More stuff here.
+
+.SH AUTHOR
+pymei was written by Jørgen Pedersen Tjernø <jorgen@devsoft.no>.
