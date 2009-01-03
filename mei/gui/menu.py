@@ -3,7 +3,7 @@ import os
 import pygame
 
 from mei import plugin, theme, datafiles, config
-from mei.gui import videobrowser, widgets
+from mei.gui import widgets
 
 class Menu(widgets.Window):
     DEFAULT_KEYS = {
@@ -32,28 +32,17 @@ class Menu(widgets.Window):
             self._choices.append((self.makeButton('Back'), self.goBack))
 
 
-        browser_types = {
-            'video': videobrowser.VideoBrowser
-        }
         for choice in choices:
             type = choice['type'].lower()
             
-            if type.startswith('browser_'):
-                type = type[len('browser_'):]
-                if not type in browser_types:
-                    raise "WTFBBQ" # TODO: Fix.
-
-                func = functools.partial(browser_types[type], choice['title'], choice['path'])
-            elif type == 'menu':
+            if choice['type'].lower() == 'menu':
                 func = functools.partial(Menu, choices=choice['choices'])
-            elif type == 'plugin':
+            else:
                 # Apply default config for this plugin.
-                default_config = plugin.get_defaults(choice['plugin'])
+                default_config = plugin.get_defaults(choice['type'])
                 cfg = config.merge(default_config, choice)
 
-                func = functools.partial(plugin.get_plugin(choice['plugin']), cfg)
-            else:
-                raise "WTFBBQ" # TODO: Fix.
+                func = functools.partial(plugin.get_plugin(choice['type']), cfg)
 
             self._choices.append((self.makeButton(choice['title']), func))
 

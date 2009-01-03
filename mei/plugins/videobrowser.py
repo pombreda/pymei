@@ -1,11 +1,14 @@
 import os
 import re
 
-from mei import dirlist, config
-import filebrowser, mplayer, mplayerembedded
+from mei import dirlist, config, plugin
+from mei.gui import filebrowser, mplayer, mplayerembedded
 
-class VideoBrowser(filebrowser.FileBrowser):
-    def __init__(self, title, top_path, app):
+class VideoBrowser(plugin.Plugin, filebrowser.FileBrowser):
+    def __init__(self, config, app):
+        title = config['title']
+        top_path = config['path']
+
         super(VideoBrowser, self).__init__(title, top_path, app)
         self._app = app
         self._listview.hilight_callback = self._shouldHilight
