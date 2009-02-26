@@ -14,6 +14,9 @@ def _get_pykey(key):
     return getattr(pygame, pkey)
 
 def load_global(details, instance, ignore_dupes=False):
+    if instance is None:
+        return
+
     for (key, action) in details.iteritems():
         if key == 'all':
             pkey = 'all'

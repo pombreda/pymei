@@ -42,7 +42,13 @@ class Menu(widgets.Window):
                 default_config = plugin.get_defaults(choice['type'])
                 cfg = config.merge(default_config, choice)
 
-                func = functools.partial(plugin.get_plugin(choice['type']), cfg)
+                plug = plugin.get_plugin(choice['type'])
+                if plug:
+                    func = functools.partial(plug, cfg)
+                else:
+                    print >>sys.stderr, "Config contains plugin %s, but it could not be loaded." % choice['type']
+                    continue
+
 
             self._choices.append((self.makeButton(choice['title']), func))
 

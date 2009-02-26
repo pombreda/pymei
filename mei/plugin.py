@@ -74,7 +74,11 @@ class _GlobalPlugins(object):
         for name in names:
             if not name in self._global_cache:
                 cfg = configs.get(name, {})
-                self._global_cache[name] = get_plugin(name, self.get_all())(app, cfg)
+                plug = get_plugin(name, self.get_all())
+                if plug:
+                    self._global_cache[name] = plug(app, cfg)
+                else:
+                    print >>sys.stderr, "Plugin '%s' is specified in config, but could not be loaded." % name
 
         self.load_keybinds(names, config.get('keybinds'))
 
@@ -86,7 +90,7 @@ class _GlobalPlugins(object):
         return [self._global_cache[p] for p in names]
 
     def get_instance(self, name):
-        return self._global_cache[name]
+        return self._global_cache.get(name)
 
     def call(self, names, method, *args, **kwargs):
         for plugin in self.get_these(names):
