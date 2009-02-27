@@ -123,7 +123,7 @@ class LircInput(plugin.GlobalPlugin):
         'name': 'pymei'
     }
 
-    def __init__(self, config):
+    def __init__(self, app, config):
         conffile = config['configuration']
         name = config['name']
 
