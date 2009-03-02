@@ -127,7 +127,11 @@ class LircInput(plugin.GlobalPlugin):
         conffile = config['configuration']
         name = config['name']
 
-        self._lirc = pylirc.init(name, conffile)
+        if conffile:
+            self._lirc = pylirc.init(name, conffile)
+        else:
+            self._lirc = pylirc.init(name)
+
         if not self._lirc:
             raise LircError('Cannot init pylirc')
 
